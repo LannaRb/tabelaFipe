@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabela Fipe Rosa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    
+
+    <div class="container">
+
+        <h1>Consulta Tabela FIPE</h1>
+        <p>Consulte o valor do seu veículo</p>
+
+        <label for="pesquisaMarca">Marca do veículo</label>
+        <input type="text" id="pesquisaMarca"
+               list="listaMarcas" placeholder="Digite a marca">
+
+        <datalist id="listaMarcas"></datalist>
+
+        <input type="hidden" id="resultado">
+
+        <button onclick="buscarModelos()">Buscar Modelos</button>
+
+        <label for="modelos">Modelo</label>
+        <select id="modelos" onchange="buscarAnos()">
+            <option value="">Selecione um modelo</option>
+        </select>
+
+        <label for="anos">Ano</label>
+        <select id="anos">
+            <option value="">Selecione o ano</option>
+        </select>
+
+        <button onclick="consultarPreco()">
+            Consultar preço
+        </button>
+        
+        <div id="preco">O valor FIPE aparecerá aqui</div>
+
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        buscarMarcas();
+    </script>
+
+    
+
+</body>
+
+</html>

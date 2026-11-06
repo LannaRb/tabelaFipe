@@ -1,56 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabela Fipe Rosa</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Consulta Tabela FIPE</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+        }
+
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+
+        button {
+            background-color: #2463eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #preco {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eeeeee;
+            border-radius: 5px;
+        }
+
+        .informacao {
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
 </head>
 
 <body>
 
-    
-
     <div class="container">
 
         <h1>Consulta Tabela FIPE</h1>
-        <p>Consulte o valor do seu veículo</p>
 
-        <label for="pesquisaMarca">Marca do veículo</label>
-        <input type="text" id="pesquisaMarca"
-               list="listaMarcas" placeholder="Digite a marca">
+        <label>Tipo de veículo:</label>
+        <select id="tipoVeiculo" onchange="buscarMarcas()">
+            <option value="">Selecione o tipo</option>
+            <option value="carros">Carros</option>
+            <option value="motos">Motos</option>
+            <option value="caminhoes">Caminhões</option>
+        </select>
 
-        <datalist id="listaMarcas"></datalist>
+        <label>Marca:</label>
+        <select id="marcas" onchange="buscarModelos()">
+            <option value="">Selecione uma marca</option>
+        </select>
 
-        <input type="hidden" id="resultado">
-
-        <button onclick="buscarModelos()">Buscar Modelos</button>
-
-        <label for="modelos">Modelo</label>
+        <label>Modelo:</label>
         <select id="modelos" onchange="buscarAnos()">
             <option value="">Selecione um modelo</option>
         </select>
 
-        <label for="anos">Ano</label>
+        <label>Ano:</label>
         <select id="anos">
-            <option value="">Selecione o ano</option>
+            <option value="">Selecione um ano</option>
         </select>
 
         <button onclick="consultarPreco()">
-            Consultar preço
+            Consultar FIPE
         </button>
-        
-        <div id="preco">O valor FIPE aparecerá aqui</div>
+
+        <h2>Informações do veículo</h2>
+
+        <div id="preco">
+            Os dados aparecerão aqui.
+        </div>
 
     </div>
 
     <script src="script.js"></script>
-    <script>
-        buscarMarcas();
-    </script>
-
-    
 
 </body>
 

@@ -1,111 +1,179 @@
-// Guarda as marcas vindas da API numa variavel
+
 let marcas = [];
 
-// Function para carregar as marcas na lista de sugestões da página
+// Carregar marcas de acordo com o tipo de veículo
 async function buscarMarcas() {
-    // Pede as marcas para a API
-    const resposta = await fetch("https://brasilapi.com.br/api/fipe/marcas/v1/carros");
-    // Converte a resposta em array
-    marcas = await resposta.json();
 
-    // Pega a lista de sugestões e limpa a lista
-    const lista = document.getElementById("listaMarcas")
-    lista.innerHTML = "";
+    const tipo = document.getElementById("tipoVeiculo").value;
 
-    // Para cada marca adiciona uma opção na lista
-    marcas.forEach(function (marca) {
-        lista.innerHTML +=
-            "<option value='" + marca.nome + "'>"
-    })
-}
-
-// Function para carregar os modelos da marca digitada
-async function buscarModelos() {
-    // Pega o nome digitado
-    const nomeDigitado = document.getElementById("pesquisaMarca").value;
-    // Procura a marca com esse nome e ignora o case
-    const marcaEncontrada = marcas.find(function (marca) {
-        return marca.nome.toLowerCase() === nomeDigitado.toLowerCase();
-    });
-    // Se não achou a marca avisa o usuário que não foi encontrado
-    if (!marcaEncontrada) {
-        alert("Selecione uma marca válida da lista!");
-        return;
-    }
-    // Guarda o código da marca no campo "resultado"
-    document.getElementById("resultado").value = marcaEncontrada.valor;
-    // Guarda o código em uma variável
-    const marca = marcaEncontrada.valor;
-    // Pede os modelos dessa marca para a API
-    const resposta = await fetch("https://brasilapi.com.br/api/fipe/veiculos/v1/carros/" + marca);
-    // Converte a resposta em array
-    const modelos = await resposta.json();
-    // Pega o campo de modelos e limpa o campo
+    const caixaMarcas = document.getElementById("marcas");
     const caixaModelos = document.getElementById("modelos");
-    caixaModelos.innerHTML = "";
-    // Para cada modelo adiciona uma opção no campo
-    modelos.forEach(function (modelo) {
-        caixaModelos.innerHTML += "<option value = '" + modelo.valor + "'>" + modelo.modelo + "</option>"
-    });
+    const caixaAnos = document.getElementById("anos");
+
+    caixaMarcas.innerHTML = '<option value="">Selecione uma marca</option>';
+    caixaModelos.innerHTML = '<option value="">Selecione um modelo</option>';
+    caixaAnos.innerHTML = '<option value="">Selecione um ano</option>';
+
+    document.getElementById("preco").innerHTML = "";
+
+    if (!tipo) return;
+
+    try {
+
+        const resposta = await fetch(
+            "https://brasilapi.com.br/api/fipe/marcas/v1/" + tipo
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar marcas");
+        }
+
+        marcas = await resposta.json();
+
+        marcas.forEach(function (marca) {
+
+            caixaMarcas.innerHTML +=
+                `<option value="${marca.valor}">${marca.nome}</option>`;
+
+        });
+
+    } catch (erro) {
+        alert(erro.message);
+    }
 }
 
-// Function para carregar os anos do modelo escolhido
-async function buscarAnos() {
-    // Pega o código da marca
-    const marca = document.getElementById("resultado").value;
-    // Pega o modelo escolhido
-    const modelo = document.getElementById("modelos").value;
-    // Mostra a marca no console
-    console.log("Marca:", marca);
-    // Mostra o modelo no console
-    console.log("Modelo:", modelo);
-    // Pede os anos à API
-    const resposta = await fetch(
-        "https://brasilapi.com.br/api/fipe/anos/v1/carros/" + marca + "/" + modelo
-    );
-    // Se a API deu erro mostra o erro no console
-    if (!resposta.ok) {
-        console.log("Erro na API:", resposta.status);
-        return;
-    }
-    // Converte a resposta em array
-    const anos = await resposta.json();
-    // Pega o campo de anos e limpa o campo
-    const caixaAnos = document.getElementById("anos");
-    caixaAnos.innerHTML = "";
-    // Para cada ano adiciona uma opção no campo
-    anos.forEach(function (ano) {
-        caixaAnos.innerHTML +=
-            "<option value ='" + ano.valor + "'>" + ano.nome + "</option>";
-    });
-};
 
-// Function para consultar e mostrar o preço FIPE
-async function consultarPreco() {
-    // Pega a marca
-    const marca = document.getElementById("resultado").value;
-    // Pega o modelo
+// Carregar modelos da marca selecionada
+async function buscarModelos() {
+
+    const tipo = document.getElementById("tipoVeiculo").value;
+    const marca = document.getElementById("marcas").value;
+
+    const caixaModelos = document.getElementById("modelos");
+    const caixaAnos = document.getElementById("anos");
+
+    caixaModelos.innerHTML = '<option value="">Selecione um modelo</option>';
+    caixaAnos.innerHTML = '<option value="">Selecione um ano</option>';
+
+    if (!marca) return;
+
+    try {
+
+        const resposta = await fetch(
+            `https://brasilapi.com.br/api/fipe/veiculos/v1/${tipo}/${marca}`
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar modelos");
+        }
+
+        const modelos = await resposta.json();
+
+        modelos.forEach(function (modelo) {
+
+            caixaModelos.innerHTML +=
+                `<option value="${modelo.valor}">${modelo.modelo}</option>`;
+
+        });
+
+    } catch (erro) {
+        alert(erro.message);
+    }
+}
+
+
+// Carregar anos do modelo selecionado
+async function buscarAnos() {
+
+    const tipo = document.getElementById("tipoVeiculo").value;
+    const marca = document.getElementById("marcas").value;
     const modelo = document.getElementById("modelos").value;
-    // Pega o ano
+
+    const caixaAnos = document.getElementById("anos");
+
+    caixaAnos.innerHTML = '<option value="">Selecione um ano</option>';
+
+    if (!modelo) return;
+
+    try {
+
+        const resposta = await fetch(
+            `https://brasilapi.com.br/api/fipe/anos/v1/${tipo}/${marca}/${modelo}`
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao buscar anos");
+        }
+
+        const anos = await resposta.json();
+
+        anos.forEach(function (ano) {
+
+            caixaAnos.innerHTML +=
+                `<option value="${ano.valor}">${ano.nome}</option>`;
+
+        });
+
+    } catch (erro) {
+        alert(erro.message);
+    }
+}
+
+
+// Consultar preço e detalhes do veículo
+async function consultarPreco() {
+
+    const tipo = document.getElementById("tipoVeiculo").value;
+    const marca = document.getElementById("marcas").value;
+    const modelo = document.getElementById("modelos").value;
     const ano = document.getElementById("anos").value;
-    // Se faltar algum dos três avisa o usuário
-    if (!marca || !modelo || !ano) {
-        alert("Selecione marca, modelo e ano!");
+
+    const resultado = document.getElementById("preco");
+
+    if (!tipo || !marca || !modelo || !ano) {
+        alert("Selecione todas as informações!");
         return;
     }
-    // Pede o preço à API
-    const resposta = await fetch(
-        "https://brasilapi.com.br/api/fipe/detalhes/v1/carros/" + marca + "/" + modelo + "/" + ano
-    );
-    // Se a API deu erro avisa o usuário
-    if (!resposta.ok) {
-        alert("Erro ao consultar preço!");
-        return;
+
+    try {
+
+        const resposta = await fetch(
+            `https://brasilapi.com.br/api/fipe/detalhes/v1/${tipo}/${marca}/${modelo}/${ano}`
+        );
+
+        if (!resposta.ok) {
+            throw new Error("Erro ao consultar FIPE");
+        }
+
+        const dados = await resposta.json();
+
+        console.log(dados);
+
+        resultado.innerHTML = "";
+
+        // Percorrer todas as informações retornadas pela API
+        for (let informacao in dados) {
+
+            const linha = document.createElement("p");
+            linha.className = "informacao";
+
+            const titulo = document.createElement("strong");
+            titulo.textContent = informacao + ": ";
+
+            const valor = document.createElement("span");
+
+            valor.textContent =
+                typeof dados[informacao] === "object"
+                    ? JSON.stringify(dados[informacao])
+                    : dados[informacao];
+
+            linha.appendChild(titulo);
+            linha.appendChild(valor);
+
+            resultado.appendChild(linha);
+        }
+
+    } catch (erro) {
+        alert(erro.message);
     }
-    // Converte a resposta em objeto
-    const dados = await resposta.json();
-    // Mostra os dados no console
-    console.log(dados);
-    // Mostra o valor FIPE na tela
-    document.getElementById("preco").innerText = "valor FIPE: " + dados.valor;
 }
